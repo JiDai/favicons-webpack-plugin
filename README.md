@@ -61,6 +61,8 @@ plugins: [
     // Generate a cache file with control hashes and
     // don't rebuild the favicons until those hashes change
     persistentCache: true,
+    // set path of the cache directory (it will be created inside outputPath of webpack)
+    persistentCacheDirectory: null,
     // Inject the html into the html-webpack-plugin
     inject: true,
     // favicon background color (see https://github.com/haydenbleasel/favicons#usage)

@@ -12,6 +12,7 @@ const webpack = denodeify(require('webpack'));
 const readFile = denodeify(require('fs').readFile);
 const writeFile = denodeify(require('fs').writeFile);
 const mkdirp = denodeify(require('mkdirp'));
+const stat = denodeify(require('fs').stat);
 
 const compareOptions = {compareSize: true};
 let outputId = 0;
@@ -120,3 +121,19 @@ test('should not recompile if there is a cache file', async t => {
   t.is(diffFiles[0], undefined);
 });
 
+test('should generate the cache in requested directory', async t => {
+  const cacheDirectory = path.join('cache');
+  const options = baseWebpackConfig(
+    new FaviconsWebpackPlugin({
+      logo: LOGO_PATH,
+      emitStats: true,
+      persistentCache: true,
+      persistentCacheDirectory: cacheDirectory
+    }));
+  const stats = await webpack(options);
+  const outputPath = stats.compilation.compiler.outputPath;
+  const cacheFile = '.cache';
+  const cacheFileResult = path.join(outputPath, cacheDirectory, cacheFile);
+  await stat(cacheFileResult);
+  t.pass();
+});
